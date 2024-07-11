@@ -1,13 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-
 from .form import UserRegisterForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from orders.models import Order, OrderItem,Ordered
 
 from .models import Profile
+import uuid
 
 @login_required
 def update_profile(request):
@@ -37,16 +38,16 @@ def user_login(request):
         if user is not None:    # user 검증 통과 했을 경우
             if user.is_active:  #user가 active=True인 경우
                 login(request,user) #login
-                return render(request, 'index.html',{'user':user})
+                return redirect('index')
             else:
                 message="사용할 수 없는 계정입니다."
-                return render(request,'login.html', {'login_form':login_form,'message':message})
         else:
             message = "아이디 또는 비밀번호를 다시 확인해주세요."
-            return render(request, 'login.html', {'login_form': login_form, 'message': message})
     else:
         login_form= LoginForm()
-    return render(request,'login.html', {'login_form':login_form})
+        message=None
+
+    return render(request,'login.html', {'login_form':login_form,'message':message})
 
 
 def signup(request): #회원가입
@@ -55,6 +56,7 @@ def signup(request): #회원가입
         if signup_form.is_valid():
             new_user = signup_form.save(commit=False)
             new_user.set_password(signup_form.cleaned_data['password']) #set_password로 저장 전 해시 처리
+            new_user.uuid = uuid.uuid4()  # uuid4()를 사용해서 랜덤 uuid 생성
             new_user.save()
             phone_number = signup_form.cleaned_data['phone1'] + signup_form.cleaned_data['phone2'] + signup_form.cleaned_data['phone3']
             address = signup_form.cleaned_data['address']
@@ -67,11 +69,27 @@ def signup(request): #회원가입
     return render(request, 'signup.html',{"signup_form":signup_form})
 @login_required
 def account(request):
-    user_info= request.user
-    if not user_info:
-        return render(request, 'login.html')
-    return render(request, 'account.html', {'user':user_info})
+    user = request.user
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    ordered_list=[]
+    if orders:
+        for order in orders:
+            ordered_value  = Ordered.objects.filter(order=order)
+            ordered_list.extend(ordered_value)
 
+        return render(request, 'account.html',{'user':user, 'ordered_list':ordered_list})
+    else:
+        message = "주문 내역이 없습니다."
+        return render(request, 'account.html', {'message': message})
+
+def ordered_detail(request, order_number):
+    print("order_number:",order_number)
+    ordered = Ordered.objects.get(order_number=order_number)
+    print("ordered:", ordered)
+    order = ordered.order.orderitem_set.all()
+    print("order:", order)
+
+    return render (request, 'ordered_detail.html',{'ordered':ordered,'order':order})
 
 @login_required
 def delete_account(request):

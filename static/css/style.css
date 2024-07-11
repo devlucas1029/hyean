@@ -34,8 +34,10 @@ p {
     width: 100%;
     height: 80px;
     /* background-color: #ff000020; */
-    padding: 40px 0 0 42px;
+    padding: 40px 20px 0 42px;
     box-sizing: border-box;
+    margin-bottom: 60px;
+
 }
 
 .header_wrap {
@@ -93,6 +95,11 @@ h2 a {
 
 .account ul {
     text-align: center;
+    display: flex;
+    white-space: nowrap;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .account ul li {
@@ -101,14 +108,27 @@ h2 a {
     margin-right: 10px;
 }
 
+.logout_btn {
+    width: 60px;
+    height: 20px;
+    font-size: 13px;
+    border: 1px solid black;
+    background-color: black;
+}
+
+.logout_btn a {
+    color: white;
+}
+
 .account ul li a {
     display: block;
-    color: black;
 }
 
 #user_status {
     font-size: 13px;
     text-align: right;
+    padding: 0 20px;
+    white-space: nowrap;
 }
 
 #user_status button{
@@ -200,7 +220,6 @@ section {
 .slick_container {
     width: 900px;
     height: 550px;
-    background-color: #ff000020;
     margin: auto;
 }
 
@@ -290,6 +309,14 @@ section {
     display: block
 }
 
+
+
+
+.slide_img_wrap img{
+    margin: auto;
+    object-fit: contain;
+}
+
 /* footer 영역!!!!!! */
 
 .footer_wrap {
@@ -335,7 +362,7 @@ section {
 .login_container {
     width: 100%;
     height: 700px;
-    padding-top: 150px;
+    padding-top: 50px;
     box-sizing: border-box;
 }
 
@@ -432,6 +459,7 @@ section {
     background-color: #2FB20F;
     border: 1px solid black;
     color: #fff;
+    font-size: 13px;
 }
 
 .login_btn:hover {
@@ -776,14 +804,64 @@ section {
 
 
 
+/*===========cart/detail.html============= */
+.cart_h1{
+    margin: 30px;
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 400;
+    font-style: normal;
+}
 
 
 
 
+/* detail.html ================         */
+.detail_title {
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: right; /* 수직 가운데 정렬 */
+}
+.detail_container {
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+.detail_image {
+    max-width: 500px;
+    margin-right: 100px; /* 이미지와 정보 사이의 간격 */
+}
+
+.detail_info {
+    max-width: 500px;
+}
+
+.img-shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 3);
+    border-radius: 1rem; /* 원한다면 테두리를 둥글게 */
+}
+
+.detail_info form {
+    margin-top: 20px; /* 폼과 작품 정보 사이의 간격 */
+}
+
+.order_wrap {
+    margin: auto;
+    text-align: center;
+}
 
 
 
 
+/*--=========카트에 담긴 제품 없을 때 페이지========== */
+.null_cart{
+    text-align: center;
+    font-size: 25px;
+    margin: 100px 0 100px 0;
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 400;
+    font-style: normal;
+}
 
 
 

@@ -1,38 +1,55 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<h1>Your shopping cart</h1>
-<table class="cart">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Remove</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in cart %}
+<section>
+<h1 class="cart_h1">나의 카트</h1>
+{% if error_message %}
+    <h1 class="null_cart">{{ error_message }}</h1>
+{%else %}
+    <table class="table">
+        <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">작품명</th>
+              <th scope="col">삭제</th>
+              <th scope="col">가격</th>
+            </tr>
+        </thead>
+      <tbody>
+        {% for item in cart_items %}
         <tr>
             <td>
-                <img src="{{ item.image_url }}" alt="{{ art_name }}" style="max-width: 500px;">
+                <img src="{{ item.image_url }}" alt="{{ art_name }}" style="max-width: 150px;">
             </td>
-            <td>{{ item.art_name }}</td>
-            <td>
+            <td class="align-middle">{{ item.art_name }}</td>
+            <td class="align-middle">
                 <form action="{% url 'cart_remove'%}" method="post">
-                    <input type="hidden" name="artCd" value="{{ item.artCd }}">
-                    <input type="submit" value="Remove">
                     {% csrf_token %}
+                    <input type="hidden" name="artCd" value="{{ item.artCd }}">
+                    <input type="submit" class="btn btn-outline-secondary" value="삭제">
+
                 </form>
             </td>
-            <td class="num">${{ item.price }}</td>
+            <td class="num align-middle">${{ item.price }}</td>
         </tr>
         {% endfor %}
-        <tr class="total">
-            <td>Total</td>
-            <td colspan="4"></td>
-            <td class="num">${{ cart.get_total_price }}</td>
-        </tr>
-    </tbody>
-</table>
+          <tr class="table-active">
+                <td>합계</td>
+                <td colspan="2"></td>
+                <td class="num">${{ total_price }}</td>
+            </tr>
+      </tbody>
+    </table>
+    <div style="text-align: right;">
+    <a href="{% url 'order_page' %}">
+        <button class="btn btn-primary" type="submit">주문하기</button>
+    </a>
+    <a href="{% url 'index' %}">
+        <button class="btn btn-primary" type="submit">계속 쇼핑하기</button>
+    </a>
+</div>
+    <br>
+    <br>
+</section>
+{% endif %}
 {% endblock %}

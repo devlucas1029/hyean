@@ -1,21 +1,37 @@
-# import os.path
+# hyean settings.py
+
 import os
-import logging
+import environ
 from pathlib import Path
+from decouple import Config, RepositoryEnv
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# .env 파일의 경로 설정
+env_path = BASE_DIR / '.env'
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# .env 파일에서 환경 변수를 로드합니다.
+load_dotenv()
+
+# Config 객체 생성
+config = Config(RepositoryEnv(env_path))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lynfxxv6&86x0r92yug0htfw22736k2szu6!shll%z8y9+#(gb'
+SECRET_KEY = config('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['hyean.com', 'localhost', '127.0.0.1']
+# ALLOWED_HOSTS 설정
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Application definition
 
@@ -39,7 +55,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.naver',
     'allauth.socialaccount.providers.google',
+    'orders',
     'cart',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -51,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'hyean.urls'
@@ -59,9 +77,7 @@ ROOT_URLCONF = 'hyean.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'templates',  # 기본 템플릿 디렉터리
-        ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -136,6 +152,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 3
+LOGIN_URL ='/login/'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = '/artWork/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'
@@ -152,3 +169,5 @@ HAYSTACK_CONNECTIONS = {
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = 'true'
 
 CART_SESSION_ID = 'cart'
+
+SERVICE_KEY = "EnxC3t4y5F7zsNObvbR+0f7cmq5U/KmLc+ug/omAwVD+PVv1tLFwiuh1BGq1NrH58cMtpcNbm6YHMlfPB0QRtg=="
